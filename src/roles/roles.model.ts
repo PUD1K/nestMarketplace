@@ -24,7 +24,7 @@ export class Role extends Model<Role, RoleCreationAttrs>{
     @Column({type: DataType.STRING, allowNull: false})
     description: string;
 
-    // params(table witch which to do connection, table through to do connection)
+    // параметры(таблица с которой нужно коннектиться, таблица через которую нужно коннектиться)
     @BelongsToMany(() => User, () => UserRoles)
     users: User[];
 }

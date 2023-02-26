@@ -1,5 +1,6 @@
-import { Injectable, HttpStatus, HttpException } from '@nestjs/common';
+import { Injectable, HttpStatus, HttpException, forwardRef, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { BasketService } from 'src/basket/basket.service';
 import { RolesService } from 'src/roles/roles.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { AddRoleDto } from './dto/add-role.dto';
@@ -9,10 +10,12 @@ import { User } from './users.model';
 export class UsersService {
 
     constructor(@InjectModel(User) private userRepository: typeof User,
-                private roleService: RolesService) {}
+                private roleService: RolesService,
+               @Inject(forwardRef(() => BasketService)) private basketService: BasketService) {}
 
     async createUser(dto: CreateUserDto){
         const user = await this.userRepository.create(dto);
+        const basket = await this.basketService.create({userId: user.id});
         const role = await this.roleService.getRoleByValue("ADMIN");
         await user.$set('roles', [role.id]);
         user.roles = [role];
@@ -30,11 +33,9 @@ export class UsersService {
     }
 
     async addRole(dto: AddRoleDto){
-        console.log(dto);
         const user = await this.userRepository.findByPk(dto.userId);
         const role = await this.roleService.getRoleByValue(dto.value);
-        const roleExist = await user.$has('roles1', [role.id]);
-        console.log(roleExist);
+        const roleExist = await user.$count('roles');
         if(user && role){
             await user.$add('roles', role.id);
             return dto;

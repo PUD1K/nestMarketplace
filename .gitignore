@@ -13,6 +13,9 @@ lerna-debug.log*
 
 # ENV
 .env
+.sequelizerc
+/migrations
+
 
 # OS
 .DS_Store

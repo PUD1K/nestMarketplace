@@ -12,7 +12,7 @@ async function start(){
         .setTitle('Маркетплейс')
         .setDescription('Документация по маркетплейсу')
         .setVersion('1.0.0')
-        .addTag("Bnl")
+        .addTag("Marketplace")
         .build()
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('/api/docs', app, document);

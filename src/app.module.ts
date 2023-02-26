@@ -19,7 +19,10 @@ import { BasketProduct } from './basket/basket-product.model';
 import { UserRoles } from './roles/user-roles.model';
 import { Product } from './product/product.model';
 import { ServeStaticModule } from '@nestjs/serve-static';
+import { SubcategoryModule } from './subcategory/subcategory.module';
 import * as path from 'path';
+import { SubCategory } from './subcategory/subcategory.model';
+import { CategoryShop } from './categories/categories-shop.model';
 
 @Module({
     imports:[
@@ -36,7 +39,7 @@ import * as path from 'path';
             username: process.env.POSTGRES_USER,
             password: process.env.POSTGRES_PASSWORD,
             database: process.env.POSTGRES_DB,
-            models: [User, Shop, UserRoles, Role, Product, Category, Basket, BasketProduct],
+            models: [User, Shop, UserRoles, Role, Product, Category, Basket, BasketProduct, SubCategory, CategoryShop],
             autoLoadModels: true
           }),
         UsersModule,
@@ -47,6 +50,7 @@ import * as path from 'path';
         ProductModule,
         BasketModule,
         CategoriesModule,
+        SubcategoryModule,
     ],
     controllers: [RolesController]
 })
