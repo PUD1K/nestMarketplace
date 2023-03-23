@@ -6,6 +6,7 @@ import { Roles } from 'src/auth/roles-auth.decorator';
 import { RolesGuard } from 'src/auth/roles.guard';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { AddRoleDto } from './dto/add-role.dto';
+import { UpdateUserInfoDto } from './dto/update-userInfo.dto';
 import { User } from './users.model';
 import { UsersService } from './users.service';
 
@@ -21,22 +22,31 @@ export class UsersController {
         return this.userService.createUser(userDto);
     }
 
+    @ApiOperation({summary: 'Изменить данные пользователя по username'})
+    @ApiResponse({status: 200, type: User})
+    // @Roles('ADMIN')
+    // @UseGuards(RolesGuard)
+    @Post('/update_data')
+    updateDataByUsername(@Body() dto: UpdateUserInfoDto){
+        return this.userService.updateUserDataByUsername(dto);
+    }
+
     @ApiOperation({summary: 'Получение списка пользователей'})
     @ApiResponse({status: 200, type: [User]})
-    @Roles('ADMIN')
-    @UseGuards(RolesGuard)
+    // @Roles('ADMIN')
+    // @UseGuards(RolesGuard)
     @Get()
     getAll(){
         return this.userService.getAllUsers();
     }
 
-    @ApiOperation({summary: 'Получить пользователя по email'})
+    @ApiOperation({summary: 'Получить пользователя по username'})
     @ApiResponse({status: 200, type: User})
-    @Roles('ADMIN')
-    @UseGuards(RolesGuard)
-    @Get('/:email')
-    getByEmail(@Param('email') email: string){
-        return this.userService.getUserByEmail(email);
+    // @Roles('ADMIN')
+    // @UseGuards(RolesGuard)
+    @Get('/:username')
+    getByEmail(@Param('username') username: string){
+        return this.userService.getUserByUsername(username);
     }
 
     @ApiOperation({summary: 'Выдать роль'})

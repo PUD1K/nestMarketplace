@@ -41,7 +41,7 @@ export class SubCategory extends Model<SubCategory, SubCategoryCreationAttr>{
     categoryId: number;
 
     @BelongsTo(() => Category)
-    Category: Category;
+    category: Category;
 
     @HasMany(() => Product)
     products: Product[]

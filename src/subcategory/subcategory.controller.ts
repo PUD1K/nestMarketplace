@@ -25,4 +25,11 @@ export class SubcategoryController {
     getBySlug(@Param('slug') slug: string){
         return this.subcategoryService.getSubcategoryBySlug(slug);
     }
+    
+    @ApiOperation({summary: 'Получить все подкатегории по категории'})
+    @ApiResponse({status: 200, type: SubCategory})
+    @Get('/by_category/:slug')
+    getAllSubCategory(@Param('slug') slug: string){
+        return this.subcategoryService.getSubcategoryByCategorySlug(slug);
+    }
 }

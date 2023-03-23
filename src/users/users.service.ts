@@ -1,9 +1,11 @@
 import { Injectable, HttpStatus, HttpException, forwardRef, Inject } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Op } from 'sequelize';
 import { BasketService } from 'src/basket/basket.service';
 import { RolesService } from 'src/roles/roles.service';
 import { CreateUserDto } from 'src/users/dto/create-user.dto';
 import { AddRoleDto } from './dto/add-role.dto';
+import { UpdateUserInfoDto } from './dto/update-userInfo.dto';
 import { User } from './users.model';
 
 @Injectable()
@@ -29,6 +31,43 @@ export class UsersService {
 
     async getUserByEmail(email: string){
         const user = await this.userRepository.findOne({where: {email}, include: {all: true}});
+        return user;
+    }
+
+    async getUserByUsername(username: string){
+        const user = await this.userRepository.findOne({where: {username}, include: {all: true}});
+        return user;
+    }
+
+    async getUserByEmailAndName(email: string, username: string){
+        const user = await this.userRepository.findOne({where: {
+            [Op.or]: [
+                {
+                    email: {
+                        [Op.eq]: email
+                    }, 
+                },
+                {
+                    username: {
+                        [Op.eq]: username
+                    }
+                }
+            ]}
+            , include: {all: true}});
+        return user;
+    }
+
+    async updateUserDataByUsername(dto: UpdateUserInfoDto){
+        const user = await this.userRepository.findOne({where: {username: dto.username}, include: {all: true}});
+        if(!user)
+            throw new HttpException('Пользователя с таким username не существует', HttpStatus.FORBIDDEN);
+        if(user.number !== dto.number)
+            user.number = dto.number;
+        if(user.email !== dto.email)
+            user.email = dto.email;
+        if(user.address !== dto.address)
+            user.address = dto.address;
+        user.save();
         return user;
     }
 

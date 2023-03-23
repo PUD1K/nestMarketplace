@@ -34,4 +34,13 @@ export class SubcategoryService {
         const subcategory = await this.subcategoryRepository.findOne({where: {slug}, include: {all: true}});
         return subcategory;
     }
+
+    async getSubcategoryByCategorySlug(slug: string){
+        const category = await this.categoryService.getCategoryBySlug(slug);
+        if(category){
+            const subcategory = await this.subcategoryRepository.findAll({where: {categoryId: category.id}, include: {all: true}});
+            return subcategory;
+        }
+        throw new HttpException('У этой категории нет подкатегорий', HttpStatus.FORBIDDEN);
+    }
 }

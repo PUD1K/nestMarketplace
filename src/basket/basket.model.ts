@@ -1,7 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Model, BelongsTo, Column, DataType, ForeignKey, Table, BelongsToMany } from "sequelize-typescript";
+import { Model, BelongsTo, Column, DataType, ForeignKey, Table, BelongsToMany, HasMany } from "sequelize-typescript";
 import { Category } from "src/categories/categories.model";
+import { CheckoutBasketProduct } from "src/checkout/checkout-basket-product.model";
 import { Product } from "src/product/product.model";
+import { SubCategory } from "src/subcategory/subcategory.model";
 import { User } from "src/users/users.model";
 import { BasketProduct } from "./basket-product.model";
 

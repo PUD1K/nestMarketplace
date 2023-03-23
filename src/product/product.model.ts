@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Model, BelongsTo, Column, DataType, ForeignKey, Table, BelongsToMany } from "sequelize-typescript";
 import { BasketProduct } from "src/basket/basket-product.model";
 import { Basket } from "src/basket/basket.model";
+import { Shop } from "src/shop/shop.model";
 import { SubCategory } from "src/subcategory/subcategory.model";
 
 interface ProductCreationAttr{
@@ -10,9 +11,11 @@ interface ProductCreationAttr{
     image: string;
     manufacturer: string;
     subCategoryId: number;
+    shopId: number,
 
     acrticle: string;
     count: string;
+    price: string;
     volume: string;
     sctructure: string;
     color: string;
@@ -55,6 +58,11 @@ export class Product extends Model<Product, ProductCreationAttr>{
     @ApiProperty({example: '1234', description: 'Артикул'})
     @Column({type: DataType.STRING, unique: true, allowNull: false})
     article: string;
+
+    // стоимость
+    @ApiProperty({example: '4000', description: 'Стоимость'})
+    @Column({type: DataType.NUMBER, unique: true, allowNull: false})
+    price: string;
 
     // для косметики
     // объем
@@ -133,6 +141,14 @@ export class Product extends Model<Product, ProductCreationAttr>{
 
     @BelongsTo(() => SubCategory)
     subCategory: SubCategory;
+
+    @ApiProperty({example: '1', description: 'ID магазина'})
+    @ForeignKey(() => Shop)
+    @Column({type: DataType.INTEGER})
+    shopId: number;
+
+    @BelongsTo(() => Shop)
+    shop: Shop;
 
     @BelongsToMany(() => Basket, () => BasketProduct)
     baskets: Basket[];

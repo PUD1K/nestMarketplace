@@ -23,14 +23,21 @@ import { SubcategoryModule } from './subcategory/subcategory.module';
 import * as path from 'path';
 import { SubCategory } from './subcategory/subcategory.model';
 import { CategoryShop } from './categories/categories-shop.model';
+import { Color } from './references/color/color.model';
+import { Size } from './references/size/size.model';
+import { ColorModule } from './references/color/color.module';
+import { SizeModule } from './references/size/size.module';
+import { CheckoutModule } from './checkout/checkout.module';
+import { Checkout } from './checkout/checkout.model';
+import { CheckoutBasketProduct } from './checkout/checkout-basket-product.model';
 
 @Module({
     imports:[
         ConfigModule.forRoot({
-            envFilePath: `.${process.env.NODE_ENV}.env`
+            envFilePath: `.${process.env.NODE_ENV}.env`,
         }),
         ServeStaticModule.forRoot({
-            rootPath: path.resolve(__dirname, '..', 'static'),
+            rootPath: path.resolve(__dirname, '..','static'),
         }),
         SequelizeModule.forRoot({
             dialect: 'postgres',
@@ -39,7 +46,7 @@ import { CategoryShop } from './categories/categories-shop.model';
             username: process.env.POSTGRES_USER,
             password: process.env.POSTGRES_PASSWORD,
             database: process.env.POSTGRES_DB,
-            models: [User, Shop, UserRoles, Role, Product, Category, Basket, BasketProduct, SubCategory, CategoryShop],
+            models: [User, Shop, UserRoles, Role, Product, Category, Basket, BasketProduct, SubCategory, CategoryShop, Color, Size, Checkout, CheckoutBasketProduct],
             autoLoadModels: true
           }),
         UsersModule,
@@ -51,6 +58,9 @@ import { CategoryShop } from './categories/categories-shop.model';
         BasketModule,
         CategoriesModule,
         SubcategoryModule,
+        ColorModule,
+        SizeModule,
+        CheckoutModule,
     ],
     controllers: [RolesController]
 })

@@ -34,7 +34,10 @@ export class CategoriesService {
         return category;
     }
 
-
+    async getAllCategories(){
+        const categories = await this.categoryRepository.findAll({include: {all: true}});
+        return categories;
+    }
 
     async addShop(dto: AddShopDto) {
         console.log(dto);
@@ -55,6 +58,4 @@ export class CategoriesService {
         throw new HttpException('Такого магазина или категории не существует', HttpStatus.FORBIDDEN)
     }
 }
-
-
 

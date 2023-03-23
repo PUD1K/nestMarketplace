@@ -1,12 +1,17 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Column, DataType, ForeignKey, Model, Table } from "sequelize-typescript";
+import { BelongsTo, Column, DataType, ForeignKey, HasMany, Index, Model, Table } from "sequelize-typescript";
+import { Color } from "src/references/color/color.model";
 import { Product } from "src/product/product.model";
 import { Basket } from "./basket.model";
+import { Size } from "src/references/size/size.model";
+import { CheckoutBasketProduct } from "src/checkout/checkout-basket-product.model";
 
 interface BasketProductCreationAttr{
     count: number;
     basketId: number;
     productId: number;
+    sizeId: number;
+    colorId: number;
 }
 
 
@@ -21,6 +26,26 @@ export class BasketProduct extends Model<BasketProduct, BasketProductCreationAtt
     @Column({type: DataType.INTEGER})
     count: number;
 
+    @ApiProperty({example: 'M', description: 'Размер одежды'})
+    @ForeignKey(() => Size)
+    @Column({type: DataType.INTEGER})
+    sizeId: number;
+
+    @BelongsTo(() => Size)
+    Size: Size;
+
+    @ApiProperty({example: 'Белый', description: 'Цвет'})
+    @ForeignKey(() => Color)
+    @Column({type: DataType.INTEGER})
+    colorId: number;
+
+    @BelongsTo(() => Color)
+    color: Color;
+
+    @HasMany(() => CheckoutBasketProduct)
+    CheckoutBasketProducts: CheckoutBasketProduct[]
+
+    @Index(['basketId', 'productId'])
     @ApiProperty({example: '1', description: 'ID корзины'})
     @ForeignKey(() => Basket)
     @Column({type: DataType.INTEGER})
@@ -30,4 +55,7 @@ export class BasketProduct extends Model<BasketProduct, BasketProductCreationAtt
     @ForeignKey(() => Product)
     @Column({type: DataType.INTEGER})
     productId: number;
+
+    @BelongsTo(() => Product)
+    product: Product;
 }

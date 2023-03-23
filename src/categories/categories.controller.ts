@@ -33,4 +33,11 @@ export class CategoriesController {
     getByName(@Param('slug') slug: string){
         return this.categoryService.getCategoryBySlug(slug);
     }
+
+    @ApiOperation({summary: 'Получение всех категорий'})
+    @ApiResponse({status: 200, type: [Category]})
+    @Get('')
+    getAllCategories(){
+        return this.categoryService.getAllCategories();
+    }
 }

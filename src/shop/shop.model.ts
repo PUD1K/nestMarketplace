@@ -2,6 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { Model, Column, DataType, ForeignKey, HasMany, Table, BelongsToMany } from "sequelize-typescript";
 import { CategoryShop } from "src/categories/categories-shop.model";
 import { Category } from "src/categories/categories.model";
+import { Product } from "src/product/product.model";
 
 interface ShopCreationAttr{
     name: string;
@@ -36,4 +37,7 @@ export class Shop extends Model<Shop, ShopCreationAttr>{
 
     @BelongsToMany(() => Category, () => CategoryShop)
     categories: Category[];
+
+    @HasMany(() => Product)
+    products: Product[]
 }
