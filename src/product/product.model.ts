@@ -1,7 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Model, BelongsTo, Column, DataType, ForeignKey, Table, BelongsToMany } from "sequelize-typescript";
+import { Model, BelongsTo, Column, DataType, ForeignKey, Table, BelongsToMany, HasMany } from "sequelize-typescript";
 import { BasketProduct } from "src/basket/basket-product.model";
 import { Basket } from "src/basket/basket.model";
+import { Comment } from "src/comment/comment.model";
 import { Shop } from "src/shop/shop.model";
 import { SubCategory } from "src/subcategory/subcategory.model";
 
@@ -12,6 +13,8 @@ interface ProductCreationAttr{
     manufacturer: string;
     subCategoryId: number;
     shopId: number,
+    totalRating: number,
+    commentsCount: number,
 
     acrticle: string;
     count: string;
@@ -61,7 +64,7 @@ export class Product extends Model<Product, ProductCreationAttr>{
 
     // стоимость
     @ApiProperty({example: '4000', description: 'Стоимость'})
-    @Column({type: DataType.NUMBER, unique: true, allowNull: false})
+    @Column({type: DataType.INTEGER, unique: true, allowNull: false})
     price: string;
 
     // для косметики
@@ -134,6 +137,15 @@ export class Product extends Model<Product, ProductCreationAttr>{
     @Column({type: DataType.STRING})
     image: string;
 
+
+    @ApiProperty({example: 'null', description: 'Количество отзывов'})
+    @Column({type: DataType.INTEGER, allowNull: true})
+    commentsCount: number;
+
+    @ApiProperty({example: 'null', description: 'Общий рейтинг'})
+    @Column({type: DataType.REAL, allowNull: true})
+    totalRating: number;
+
     @ApiProperty({example: '1', description: 'ID подкатегории'})
     @ForeignKey(() => SubCategory)
     @Column({type: DataType.INTEGER})
@@ -152,4 +164,7 @@ export class Product extends Model<Product, ProductCreationAttr>{
 
     @BelongsToMany(() => Basket, () => BasketProduct)
     baskets: Basket[];
+
+    @HasMany(() => Comment)
+    comments: Comment[];
 }

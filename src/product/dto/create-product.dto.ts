@@ -3,6 +3,7 @@ export class CreateProductDto{
     readonly description: string;
     subcategoryName: string;
     readonly manufacturer: string;
+    readonly shopName: string;
 
     readonly article: string;
     readonly volume: string;

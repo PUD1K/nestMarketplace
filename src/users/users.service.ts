@@ -18,7 +18,7 @@ export class UsersService {
     async createUser(dto: CreateUserDto){
         const user = await this.userRepository.create(dto);
         const basket = await this.basketService.create({userId: user.id});
-        const role = await this.roleService.getRoleByValue("ADMIN");
+        const role = await this.roleService.getRoleByValue("USER");
         await user.$set('roles', [role.id]);
         user.roles = [role];
         return user;
@@ -76,9 +76,9 @@ export class UsersService {
         const role = await this.roleService.getRoleByValue(dto.value);
         const roleExist = await user.$count('roles');
         if(user && role){
-            await user.$add('roles', role.id);
-            return dto;
+            roleExist > 0 ? await user.$add('roles', role.id) : await user.$set('roles', role.id)
+            return user;
         }
-        throw new HttpException('Пользователь не найден', HttpStatus.FORBIDDEN);
+        throw new HttpException('Пользователь или такая роль не существует', HttpStatus.FORBIDDEN);
     }
 }

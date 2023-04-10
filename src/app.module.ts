@@ -30,6 +30,8 @@ import { SizeModule } from './references/size/size.module';
 import { CheckoutModule } from './checkout/checkout.module';
 import { Checkout } from './checkout/checkout.model';
 import { CheckoutBasketProduct } from './checkout/checkout-basket-product.model';
+import { CommentModule } from './comment/comment.module';
+import { Comment } from './comment/comment.model';
 
 @Module({
     imports:[
@@ -46,7 +48,7 @@ import { CheckoutBasketProduct } from './checkout/checkout-basket-product.model'
             username: process.env.POSTGRES_USER,
             password: process.env.POSTGRES_PASSWORD,
             database: process.env.POSTGRES_DB,
-            models: [User, Shop, UserRoles, Role, Product, Category, Basket, BasketProduct, SubCategory, CategoryShop, Color, Size, Checkout, CheckoutBasketProduct],
+            models: [User, Shop, UserRoles, Role, Product, Category, Basket, BasketProduct, SubCategory, CategoryShop, Color, Size, Checkout, CheckoutBasketProduct, Comment],
             autoLoadModels: true
           }),
         UsersModule,
@@ -61,6 +63,7 @@ import { CheckoutBasketProduct } from './checkout/checkout-basket-product.model'
         ColorModule,
         SizeModule,
         CheckoutModule,
+        CommentModule,
     ],
     controllers: [RolesController]
 })

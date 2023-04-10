@@ -14,6 +14,7 @@ export class ShopService {
     async createShop(dto: CreateShopDto, image: any){
         const candidate = await this.getShopByName(dto.name);
         if(!candidate){
+            console.log(image)
             const fileName = await this.fileService.createFile(image);
             const shop = await this.shopRepository.create({...dto, slug: translit(dto.name), image: fileName});
             return shop;
@@ -26,7 +27,13 @@ export class ShopService {
         return shop
     }
 
+    async getAllShops(){
+        const shop = await this.shopRepository.findAll({include: {all: true}});
+        return shop
+    }
+
     async getShopBySlug(slug: string){
+        console.log(slug)
         const shop = await this.shopRepository.findOne({where: {slug}, include: {all: true}});
         return shop;
     }

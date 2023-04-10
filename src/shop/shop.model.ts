@@ -3,6 +3,7 @@ import { Model, Column, DataType, ForeignKey, HasMany, Table, BelongsToMany } fr
 import { CategoryShop } from "src/categories/categories-shop.model";
 import { Category } from "src/categories/categories.model";
 import { Product } from "src/product/product.model";
+import { User } from "src/users/users.model";
 
 interface ShopCreationAttr{
     name: string;
@@ -40,4 +41,7 @@ export class Shop extends Model<Shop, ShopCreationAttr>{
 
     @HasMany(() => Product)
     products: Product[]
+
+    @HasMany(() => User)
+    users: User[]
 }

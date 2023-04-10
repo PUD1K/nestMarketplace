@@ -19,10 +19,17 @@ export class ShopController {
         return this.shopService.createShop(dto, image);
     }
 
-    @ApiOperation({summary: 'Поиск магазина по имени'})
+    @ApiOperation({summary: 'Поиск магазина по slug'})
     @ApiResponse({status: 200, type: Shop})
-    @Get('/:name')
+    @Get('/by_slug/:slug')
     getByName(@Param('slug') slug: string){
         return this.shopService.getShopBySlug(slug);
+    }
+
+    @ApiOperation({summary: 'Получение всех магазинов'})
+    @ApiResponse({status: 200, type: Shop})
+    @Get('')
+    getAllShops(){
+        return this.shopService.getAllShops();
     }
 }

@@ -1,13 +1,15 @@
 import { Controller } from '@nestjs/common';
 import { Delete, Get, Post } from '@nestjs/common/decorators';
 import { UseInterceptors } from '@nestjs/common/decorators/core/use-interceptors.decorator';
-import { Body, Param, UploadedFile } from '@nestjs/common/decorators/http/route-params.decorator';
+import { Body, Param, Query, UploadedFile } from '@nestjs/common/decorators/http/route-params.decorator';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { query } from 'express';
 import { BasketProduct } from 'src/basket/basket-product.model';
 import { AddToBasketDto } from './dto/add-to-basket.dto';
 import { CreateProductDto } from './dto/create-product.dto';
 import { RemoveFromBasketDto } from './dto/remove-to-basket';
+import { SortProductsDto } from './dto/sort-products';
 import { Product } from './product.model';
 import { ProductService } from './product.service';
 
@@ -27,7 +29,7 @@ export class ProductController {
 
     @ApiOperation({summary: 'Получение товара по артикулу'})
     @ApiResponse({status: 200, type: Product})
-    @Get('/:article')
+    @Get('/product_by_article/:article')
     getByArticle(@Param('article') article: string){
         return this.productService.getProductByArticle(article);
     }
@@ -35,8 +37,8 @@ export class ProductController {
     @ApiOperation({summary: 'Получение товара по слагу подкатегории'})
     @ApiResponse({status: 200, type: Product})
     @Get('/by_subcategory/:subcategoryslug')
-    getBySubcategorySlug(@Param('subcategoryslug') subcategoryslug: string){
-        return this.productService.getProductsBySubcategorySlug(subcategoryslug);
+    getBySubcategorySlug(@Param('subcategoryslug') subcategoryslug: string, @Query('page') page: string, @Query('sort') sort: string){
+        return this.productService.getProductsBySubcategorySlug(subcategoryslug, Number(page), sort);
     }
 
     @ApiOperation({summary: 'Получить все товары'})
@@ -61,12 +63,20 @@ export class ProductController {
         return this.productService.addToBasket(dto);
     }
 
-    @ApiOperation({summary: 'Изменить количество товара'})
+    @ApiOperation({summary: 'Поиск товаров'})
+    @ApiResponse({status: 200, type: [Product]})
+    @Get('/search')
+    searchProductByName(@Query('query') query: string, @Query('sorting') sorting: string, @Query('page') page: number){
+        return this.productService.searchByName(query, sorting, page);
+    }
+
+    @ApiOperation({summary: 'Изменить количество товара в корзине'})
     @ApiResponse({status: 200, type: BasketProduct})
     @Post('/set_count_basket_product')
     setCountBasketProduct(@Body() dto: AddToBasketDto){
         return this.productService.setCountProductInBasket(dto);
     }
+
 
     @ApiOperation({summary: 'Удаление n-единиц товара из корзины'})
     @ApiResponse({status: 200, type: BasketProduct})

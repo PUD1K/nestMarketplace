@@ -1,8 +1,10 @@
-import { BelongsTo, BelongsToMany, Column, DataType, HasMany, HasOne, Model, Table } from "sequelize-typescript";
+import { ApiProperty } from "@nestjs/swagger";
+import { BelongsTo, BelongsToMany, Column, DataType, ForeignKey, HasMany, HasOne, Model, Table } from "sequelize-typescript";
 import { Basket } from "src/basket/basket.model";
 import { Checkout } from "src/checkout/checkout.model";
 import { Role } from "src/roles/roles.model";
 import { UserRoles } from "src/roles/user-roles.model";
+import { Shop } from "src/shop/shop.model";
 
 interface UserCreationAttrs{
     email: string;
@@ -30,9 +32,19 @@ export class User extends Model<User, UserCreationAttrs>{
     @Column({type: DataType.STRING, allowNull: true})
     address: string;
 
+    @ApiProperty({example: 'ID магазина, указывается в случае, если юзер является работником магазина', description: 'Толстовки'})
+    @ForeignKey(() => Shop)
+    @Column({type: DataType.INTEGER})
+    shopId: number;
+
+    // принадлежит одному
+    @BelongsTo(() => Shop)
+    shop: Shop;
+
     @BelongsToMany(() => Role, () => UserRoles)
     roles: Role[];
 
+    // имеет один
     @HasOne(() => Basket)
     basket: Basket;
 
