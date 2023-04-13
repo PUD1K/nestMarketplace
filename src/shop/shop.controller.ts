@@ -4,6 +4,7 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateShopDto } from './dto/create-shop.dto';
 import { Shop } from './shop.model';
 import { ShopService } from './shop.service';
+import { BindWithUserDto } from './dto/bind-with-user.dto';
 
 @Controller('shop')
 export class ShopController {
@@ -19,11 +20,25 @@ export class ShopController {
         return this.shopService.createShop(dto, image);
     }
 
+    @ApiOperation({summary: 'Связать магазин с пользователем'})
+    @ApiResponse({status: 200, type: Shop})
+    @Post('/bind_with_user')
+    bindShopWithUser(@Body() dto: BindWithUserDto){
+        return this.shopService.bindWithUser(dto);
+    }
+
     @ApiOperation({summary: 'Поиск магазина по slug'})
     @ApiResponse({status: 200, type: Shop})
     @Get('/by_slug/:slug')
     getByName(@Param('slug') slug: string){
         return this.shopService.getShopBySlug(slug);
+    }
+
+    @ApiOperation({summary: 'Связать магазин с пользователем'})
+    @ApiResponse({status: 200, type: Shop})
+    @Post('/search_manager')
+    searchManager(@Body() dto: BindWithUserDto){
+        return this.shopService.searchManager(dto);
     }
 
     @ApiOperation({summary: 'Получение всех магазинов'})
