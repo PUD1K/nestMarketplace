@@ -12,6 +12,9 @@ import { UsersService } from 'src/users/users.service';
 import { BasketService } from 'src/basket/basket.service';
 import { UsersModule } from 'src/users/users.module';
 import { BasketModule } from 'src/basket/basket.module';
+import { ShopModule } from 'src/shop/shop.module';
+import { CategoriesModule } from 'src/categories/categories.module';
+import { SubcategoryModule } from 'src/subcategory/subcategory.module';
 
 @Module({
   providers: [CheckoutService],
@@ -19,7 +22,9 @@ import { BasketModule } from 'src/basket/basket.module';
   imports:[
     SequelizeModule.forFeature([User, BasketProduct, CheckoutBasketProduct, Checkout, Product]),
     UsersModule,
-    BasketModule
+    BasketModule,
+    ShopModule,
+    SubcategoryModule
   ],
   exports: [
     CheckoutService

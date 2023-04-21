@@ -1,10 +1,11 @@
-import { Body, Controller, Get, Param, Post, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, Put, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateShopDto } from './dto/create-shop.dto';
 import { Shop } from './shop.model';
 import { ShopService } from './shop.service';
 import { BindWithUserDto } from './dto/bind-with-user.dto';
+import { UpdateShopDto } from './dto/update-shop.dto';
 
 @Controller('shop')
 export class ShopController {
@@ -27,7 +28,7 @@ export class ShopController {
         return this.shopService.bindWithUser(dto);
     }
 
-    @ApiOperation({summary: 'Поиск магазина по slug'})
+    @ApiOperation({summary: 'Получить магазин по slug'})
     @ApiResponse({status: 200, type: Shop})
     @Get('/by_slug/:slug')
     getByName(@Param('slug') slug: string){
@@ -46,5 +47,14 @@ export class ShopController {
     @Get('')
     getAllShops(){
         return this.shopService.getAllShops();
+    }
+
+    @ApiOperation({summary: 'Обновление магазина'})
+    @ApiResponse({status: 200, type: Shop})
+    @Put()
+    @UseInterceptors(FileInterceptor('image'))
+    updateShop(@Body() dto: UpdateShopDto,
+                @UploadedFile() image){
+        return this.shopService.updateShop(dto, image);
     }
 }

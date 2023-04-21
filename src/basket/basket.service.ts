@@ -24,8 +24,16 @@ export class BasketService {
 
     async addToBasket(productId: number, userId: number, count: number, sizeId: number, colorId: number){
         const basket = await this.getBasketByUserId(userId);
+        let where:Partial<{ productId: number; basketId: number; sizeId?: number; colorId?: number }> = {productId, basketId: basket.id}
+        if(sizeId){
+            where = {...where, sizeId}
+        }
+        if(colorId){
+            where = {...where, colorId}
+        }
+
         let candidateBasketProduct = await this.basketProductRepository.findOne({
-            where: {productId, basketId: basket.id, sizeId, colorId}, 
+            where: where, 
             include: [
             { model: Color },
             { model: Size }]

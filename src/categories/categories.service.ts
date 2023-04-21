@@ -6,6 +6,7 @@ import { ShopService } from 'src/shop/shop.service';
 import { Category } from './categories.model';
 import { AddShopDto } from './dto/add-shop.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { GetCategoriesForShop } from './dto/get-categories-for-shop.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -39,13 +40,19 @@ export class CategoriesService {
         return categories;
     }
 
-    async addShop(dto: AddShopDto) {
+    async getFreeCategoriesForShop(dto: GetCategoriesForShop){
+        const categories = await this.categoryRepository.findAll();
+        const categoriesInShop: string[] = JSON.parse(dto.categories);
+        const freeCategories = categories.filter(category => !categoriesInShop.includes(category.name))
+        return freeCategories;
+    }
+
+    async addCategoryToShop(dto: AddShopDto) {
         console.log(dto);
         const shop = await this.shopService.getShopByName(dto.shopName);
         const category = await this.getCategoryByName(dto.categoryName);
 
         const existShopInCategory = await category.$has('shops', shop.id)
-        console.log(existShopInCategory);
         if (shop && category) {
             if (existShopInCategory) {
                 await category.$add('shop', shop.id);

@@ -18,8 +18,15 @@ export class CheckoutController {
 
     @ApiOperation({summary: 'Получение списка заказов'})
     @ApiResponse({status: 200, type: Checkout})
-    @Get('/:username')
+    @Get('by_slug/:username')
     async getCheckouts(@Param('username') username: string){
         return this.checkoutService.getAllCheckoutInfoTest(username);
+    }
+
+    @ApiOperation({summary: 'Получение списка заказов'})
+    @ApiResponse({status: 200, type: Checkout})
+    @Get('by_shop_slug/:shop')
+    async getAll(@Param('shop') shop: string){
+        return this.checkoutService.getAllForShop(shop);
     }
 }

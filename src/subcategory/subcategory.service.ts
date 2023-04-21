@@ -5,6 +5,8 @@ import { FilesService } from 'src/files/files.service';
 import { translit } from 'src/middleware/translit';
 import { CreateSubcategoryDto } from './dto/create-subcategory.dto';
 import { SubCategory } from './subcategory.model';
+import { GetSubCategoriesForShop } from './dto/get-subcategories-for-shop.dto';
+import { Category } from 'src/categories/categories.model';
 
 @Injectable()
 export class SubcategoryService {
@@ -35,6 +37,11 @@ export class SubcategoryService {
         return subcategory;
     }
 
+    async getSubcategoryById(id: number){
+        const subcategory = await this.subcategoryRepository.findOne({where: {id}, include: [{model: Category}]});
+        return subcategory;
+    }
+
     async getSubcategoryByCategorySlug(slug: string){
         const category = await this.categoryService.getCategoryBySlug(slug);
         if(category){
@@ -42,5 +49,12 @@ export class SubcategoryService {
             return subcategory;
         }
         throw new HttpException('У этой категории нет подкатегорий', HttpStatus.FORBIDDEN);
+    }
+
+    async getFreeSubcategoriesForShop(dto: GetSubCategoriesForShop){
+        const subcategories = await this.subcategoryRepository.findAll();
+        const subcategoriesInShop: string[] = JSON.parse(dto.subcategories);
+        const freeSubcategories = subcategories.filter(subcategory => !subcategoriesInShop.includes(subcategory.name))
+        return freeSubcategories;
     }
 }

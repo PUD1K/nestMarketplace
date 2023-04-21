@@ -43,16 +43,18 @@ export class ProductService {
                 }
 
     async create(dto: CreateProductDto, image: any){
-        const candidate = await this.getProductByArticle(dto.article);
+        const article = await this.createArticle();
+        const candidate = await this.getProductByArticle(article);
         if(!candidate){
             const fileName = await this.fileService.createFile(image);
             const subCategory = await this.subcategoryService.getSubcategoryByName(dto.subcategoryName);
-            const shop = await this.shopService.getShopByName(dto.shopName);
+            const shop = await this.shopService.getShopBySlug(dto.shopSlug);
 
             delete dto['subcategoryName'];
 
             const product = await this.productRepository.create({
                 ...dto, 
+                article,
                 subCategoryId: Number(subCategory.id), 
                 image: fileName, 
                 shopId: shop.id,
@@ -109,7 +111,7 @@ export class ProductService {
         const user = await this.userService.getUserByUsername(dto.username);
         const color = await this.colorService.getColor(dto.color);
         const size =  await this.sizeService.getSize(dto.size);
-        const addToBasket = await this.basketService.addToBasket(product.id, user.id, Number(dto.count), size.id, color.id);
+        const addToBasket = await this.basketService.addToBasket(product.id, user.id, Number(dto.count), size ? size.id : null, color ? color.id : null);
         return addToBasket;
     }
 
@@ -227,6 +229,12 @@ export class ProductService {
 
 
         return sortBody
+    }
+
+    async createArticle() {
+        let article: string = await this.productRepository.max('id');
+        article = String(Number(article) + 1);
+        return article;
     }
 
     async deleteProduct(article: string){

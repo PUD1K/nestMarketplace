@@ -4,6 +4,7 @@ import { ApiOperation, ApiResponse } from '@nestjs/swagger';
 import { CreateSubcategoryDto } from './dto/create-subcategory.dto';
 import { SubCategory } from './subcategory.model';
 import { SubcategoryService } from './subcategory.service';
+import { GetSubCategoriesForShop } from './dto/get-subcategories-for-shop.dto';
 
 @Controller('subcategory')
 export class SubcategoryController {
@@ -31,5 +32,12 @@ export class SubcategoryController {
     @Get('/by_category/:slug')
     getAllSubCategory(@Param('slug') slug: string){
         return this.subcategoryService.getSubcategoryByCategorySlug(slug);
+    }
+
+    @ApiOperation({summary: 'Получить все подкатегории которых нет в магазина'})
+    @ApiResponse({status: 200, type: SubCategory})
+    @Post('/for_shop')
+    getSubcategoriesForShop(@Body() dto: GetSubCategoriesForShop){
+        return this.subcategoryService.getFreeSubcategoriesForShop(dto);
     }
 }

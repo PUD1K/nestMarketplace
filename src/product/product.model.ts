@@ -16,7 +16,7 @@ interface ProductCreationAttr{
     totalRating: number,
     commentsCount: number,
 
-    acrticle: string;
+    article: string;
     count: string;
     price: string;
     volume: string;
@@ -73,7 +73,8 @@ export class Product extends Model<Product, ProductCreationAttr>{
     @Column({type: DataType.STRING, allowNull: true})
     volume: string;
 
-    // состав
+    // состав 
+    // upd. сейчас никак не используется
     @ApiProperty({example: 'null', description: 'Состав'})
     @Column({type: DataType.STRING, allowNull: true})
     sctructure: string;

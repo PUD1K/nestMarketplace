@@ -5,6 +5,7 @@ import { Category } from './categories.model';
 import { CategoriesService } from './categories.service';
 import { AddShopDto } from './dto/add-shop.dto';
 import { CreateCategoryDto } from './dto/create-category.dto';
+import { GetCategoriesForShop } from './dto/get-categories-for-shop.dto';
 
 @Controller('categories')
 export class CategoriesController {
@@ -22,9 +23,10 @@ export class CategoriesController {
 
     @ApiOperation({summary: 'Связывание категории с магазином'})
     @ApiResponse({status: 200, type: Category})
-    @Post('shop')
-    addShop(@Body() dto: AddShopDto){
-        return this.categoryService.addShop(dto);
+    @Post('/shop')
+    addCategoryToShop(@Body() dto: AddShopDto){
+        console.log(dto);
+        return this.categoryService.addCategoryToShop(dto);
     }
 
     @ApiOperation({summary: 'Получение категории по слагу'})
@@ -39,5 +41,12 @@ export class CategoriesController {
     @Get('')
     getAllCategories(){
         return this.categoryService.getAllCategories();
+    }
+
+    @ApiOperation({summary: 'Получить все подкатегории которых нет в магазина'})
+    @ApiResponse({status: 200, type: Category})
+    @Post('/for_shop')
+    getCategoriesForShop(@Body() dto: GetCategoriesForShop){
+        return this.categoryService.getFreeCategoriesForShop(dto);
     }
 }

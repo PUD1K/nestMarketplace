@@ -6,6 +6,12 @@ import { Shop } from './shop.model';
 import { translit } from 'src/middleware/translit';
 import { UsersService } from 'src/users/users.service';
 import { BindWithUserDto } from './dto/bind-with-user.dto';
+import { UpdateShopDto } from './dto/update-shop.dto';
+import { RolesService } from 'src/roles/roles.service';
+import { Category } from 'src/categories/categories.model';
+import { SubCategory } from 'src/subcategory/subcategory.model';
+import { Product } from 'src/product/product.model';
+import { User } from 'src/users/users.model';
 
 @Injectable()
 export class ShopService {
@@ -37,7 +43,18 @@ export class ShopService {
     }
 
     async getShopBySlug(slug: string){
-        const shop = await this.shopRepository.findOne({where: {slug}, include: {all: true}});
+        const shop = await this.shopRepository.findOne({where: {slug}, 
+            include: [{
+                model: Category,
+                include: [{
+                    model: SubCategory
+                }],
+            }, {
+                model: Product,
+            }, {
+                model: User
+            }]
+        });
         return shop;
     }
 
@@ -54,8 +71,41 @@ export class ShopService {
     async bindWithUser(dto: BindWithUserDto){
         const user = await this.userService.getUserByUsername(dto.username);
         const shop = await this.getShopBySlug(dto.shopSlug);
+        this.userService.addRole({userId: user.id, value: 'MANAGER'})
         user.shopId = shop.id;
         user.save()
+        return shop;
+    }
+
+    async addShop(dto: BindWithUserDto){
+        const user = await this.userService.getUserByUsername(dto.username);
+        const shop = await this.getShopBySlug(dto.shopSlug);
+        this.userService.addRole({userId: user.id, value: 'MANAGER'})
+        user.shopId = shop.id;
+        user.save()
+        return shop;
+    }
+    
+    async bindWithUserThroughtShop(username: string, shopId: number){
+        const user = await this.userService.getUserByUsername(username);
+        user.shopId = shopId;
+        user.save()
+    }
+
+    async updateShop(dto: UpdateShopDto, image: any){
+        const shop = await this.getShopBySlug(dto.shopSlug);
+        shop.name = dto.name;
+        shop.description = dto.description;
+        if(image){
+            const fileName = await this.fileService.createFile(image);
+            shop.image = fileName;
+            console.log(shop.image)
+        }
+        const usernamesArr = JSON.parse(dto.usernamesArr)
+        for(const username of usernamesArr){
+            await this.bindWithUserThroughtShop(username, shop.id);
+        }
+        shop.save()
         return shop;
     }
 } 
